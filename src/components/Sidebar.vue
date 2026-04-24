@@ -1,45 +1,44 @@
 <template>
-  <aside class="w-64 shrink-0 flex flex-col bg-[#111512] border-r border-[#1e2820] h-screen">
+  <aside class="w-64 shrink-0 flex flex-col bg-[#1a1e29] border-r border-[#ffffff] h-screen">
 
     <!-- Logo -->
-    <div class="flex items-center gap-3 px-5 py-5 border-b border-[#1e2820]">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-green-600 to-green-800
+    <div class="flex items-center gap-3 px-5 py-5 border-b border-[#ffffff]">
+      <!-- <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-green-600 to-green-800
                   flex items-center justify-center text-base shrink-0">
         🌿
-      </div>
+      </div> -->
       <div>
-        <p class="text-sm font-semibold text-[#e8f0ea]">AcadêmicoAI</p>
-        <p class="text-[10px] text-[#3d5443] font-mono">assistente de estudos</p>
+        <p class="text-[1rem] font-semibold text-white" style="margin: 5px 10px;">AcadêmicoAI</p>
+        <p class="text-[1rem] text-white font-mono" style="margin: 5px 10px;">assistente de estudos</p>
       </div>
     </div>
 
     <!-- Botão novo chat -->
-    <div class="px-4 pt-4 pb-2">
+    <div class="px-4 pt-4 pb-2 flex items-start justify-start" style="margin: 20px 10px;">
       <button
         @click="showModal = true"
-        class="w-full flex items-center justify-center gap-2
-               bg-gradient-to-r from-green-700 to-green-800
-               hover:from-green-600 hover:to-green-700
-               text-white text-sm font-medium
-               py-2.5 px-4 rounded-lg
-               transition-all duration-150
-               hover:shadow-[0_0_20px_#16a34a44]"
+        class="w-10% text-start gap-2
+               bg-[#01c38e]
+               text-[#1a1e29] 
+               text-[1rem]
+               rounded-sm
+               cursor-pointer
+               " style="padding: 10px;"
       >
-        <span class="text-base leading-none">＋</span>
-        Novo chat
+        Nova Conversa
       </button>
     </div>
 
     <!-- Lista de chats -->
-    <div class="flex-1 overflow-y-auto px-3 py-2 space-y-0.5">
+    <div class="flex-1 overflow-y-auto px-3 py-2 space-y-0.5" style="margin: 20px 10px;">
       <p v-if="Object.keys(store.chats).length === 0"
-         class="text-xs text-[#3d5443] text-center mt-4">
+         class="text-[0.875rem] text-white text-center mt-4 font-1000">
         Nenhuma conversa ainda
       </p>
 
       <template v-else>
-        <p class="text-[10px] font-mono text-[#3d5443] uppercase tracking-widest px-2 py-2">
-          Conversas
+        <p class="text-[1rem] font-mono text-[#ffffff] uppercase tracking-widest px-2 py-2">
+          Recentes
         </p>
 
         <button
@@ -47,11 +46,12 @@
           :key="id"
           @click="store.selecionarChat(id)"
           :class="[
-            'w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-100 truncate',
+            'w-full text-left rounded-sm text-[1rem] transition-all duration-100 truncate',
             store.chatAtivoId === id
-              ? 'bg-[#171c18] border border-green-800 text-green-400'
+              ? 'bg-[#132d46] rounded-sm text-[#ffffff] text-[1rem]'
               : 'text-[#7a9480] hover:bg-[#171c18] hover:text-[#e8f0ea] border border-transparent'
           ]"
+          style="padding: 5px 10px;"
         >
           <span v-if="store.chatAtivoId === id" class="mr-1">▸</span>
           {{ chat.titulo }}
@@ -60,9 +60,9 @@
     </div>
 
     <!-- Rodapé -->
-    <div class="px-5 py-3 border-t border-[#1e2820]">
+    <!-- <div class="px-5 py-3 border-t border-[#1e2820]">
       <p class="text-[10px] font-mono text-[#3d5443]">API: {{ apiBase }}</p>
-    </div>
+    </div> -->
 
   </aside>
 </template>

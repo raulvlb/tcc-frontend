@@ -4,26 +4,21 @@
     <!-- Empty state -->
     <div v-if="!chat"
          class="flex-1 flex flex-col items-center justify-center gap-4 text-center px-8">
-      <div class="w-16 h-16 rounded-2xl bg-[#111512] border border-[#1e2820]
+      <!-- <div class="w-16 h-16 rounded-2xl bg-[#111512] border border-[#1e2820]
                   flex items-center justify-center text-3xl">
         🌿
-      </div>
+      </div> -->
       <div>
-        <p class="text-xl font-semibold text-[#e8f0ea] mb-2">Como posso te ajudar?</p>
-        <p class="text-sm text-[#7a9480]">Crie um novo chat e selecione a disciplina para começar.</p>
+        <p class="text-xl font-semibold text-[#ffffff] mb-2">Como posso te ajudar?</p>
+        <p class="text-sm text-[#01c38e]">Crie um novo chat e selecione a disciplina para começar.</p>
       </div>
     </div>
 
     <template v-else>
       <!-- Cabeçalho -->
-      <div class="px-6 py-4 border-b border-[#1e2820] shrink-0">
-        <p class="text-base font-semibold text-[#e8f0ea]">{{ chat.titulo }}</p>
-        <div class="inline-flex items-center gap-1.5 mt-1.5
-                    bg-[#111512] border border-[#243024]
-                    rounded-full px-3 py-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span>
-          <span class="text-[11px] text-green-400 font-mono">{{ chat.disciplina }}</span>
-        </div>
+      <div class="bg-[#1a1e29] rounded-sm" style="margin: 10px 30% 10px 30%;">
+        <p class="text-[1rem] text-[#01c38e] font-semibold" style="margin: 5px 10px;">{{ chat.disciplina }}</p>
+        <p class="text-[1rem] font-mono text-[#e8f0ea]" style="margin: 5px 10px;">{{ tituloExibido }}</p>
       </div>
 
       <!-- Mensagens -->
@@ -91,6 +86,11 @@ const messagesEl = ref(null)
 const inputEl = ref(null)
 
 const chat = computed(() => store.getChatAtivo())
+const tituloExibido = computed(() => {
+  const titulo = chat.value?.titulo ?? ''
+  if (titulo.length <= 84) return titulo
+  return titulo.slice(0, 81) + '...'
+})
 const carregando = computed(() => {
   const msgs = chat.value?.messages || []
   return msgs.some(m => m.loading)

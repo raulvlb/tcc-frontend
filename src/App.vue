@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen bg-[#0d0f0e] text-[#e8f0ea] font-['Sora',sans-serif] overflow-hidden">
+  <div class="flex h-screen overflow-hidden">
     <Sidebar />
     <ChatArea />
     <NewChatModal v-if="showModal" @close="showModal = false" />
