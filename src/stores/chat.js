@@ -76,7 +76,7 @@ export const useChatStore = defineStore('chat', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           gemini_api_key: GEMINI_API_KEY,
-          gemini_store_name: chat.store,
+          store_name: chat.store,
           prompt,
           historico,
         }),
@@ -84,12 +84,19 @@ export const useChatStore = defineStore('chat', () => {
 
       if (!res.ok) throw new Error(`Erro ${res.status}`)
       const data = await res.json()
-      chat.messages[loadingIdx] = { role: 'assistant', content: data.resposta }
+
+      const referencias = Array.isArray(data.referencias) ? data.referencias : []
+      chat.messages[loadingIdx] = {
+        role: 'assistant',
+        content: data.resposta,
+        referencias,
+      }
     } catch (e) {
       chat.messages[loadingIdx] = {
         role: 'assistant',
         content: `⚠️ Erro ao consultar a API: ${e.message}`,
         error: true,
+        referencias: [],
       }
     }
   }

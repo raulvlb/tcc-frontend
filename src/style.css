@@ -1,19 +1,98 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
-* {
+:root {
+  --background: 222 47% 11%;
+  --foreground: 210 40% 96%;
+  --card: 222 41% 13%;
+  --card-foreground: 210 40% 96%;
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 142 70% 45%;
+  --accent-foreground: 222 47% 11%;
+  --border: 217 28% 22%;
+  --input: 217 28% 22%;
+  --ring: 142 70% 45%;
+  --destructive: 0 63% 40%;
+  --destructive-foreground: 0 0% 98%;
+  --radius: 0.75rem;
+}
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 body {
+  margin: 0;
   font-family: 'Sora', sans-serif;
-  background-color: #132d46;
-  color: #e8f0ea;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.bg-background {
+  background-color: hsl(var(--background));
+}
+
+.bg-card {
+  background-color: hsl(var(--card));
+}
+
+.text-foreground {
+  color: hsl(var(--foreground));
+}
+
+.text-muted-foreground {
+  color: hsl(var(--muted-foreground));
+}
+
+.border-border {
+  border-color: hsl(var(--border));
 }
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #243024; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #3d5443; }
+::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+
+/* Scrollbar utilitários (use em containers específicos) */
+.scrollbar-fade {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: transparent transparent;
+}
+
+.scrollbar-fade:hover {
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
+.scrollbar-fade::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-fade::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-fade::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+.scrollbar-fade:hover::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+}
+
+.scrollbar-hidden {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge legacy */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}

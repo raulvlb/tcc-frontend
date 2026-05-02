@@ -1,74 +1,77 @@
 <template>
-  <main class="flex-1 flex flex-col h-screen overflow-hidden">
-
-    <!-- Empty state -->
+  <main class="flex h-screen flex-1 flex-col overflow-hidden bg-[hsl(var(--background))]">
+    
     <div v-if="!chat"
-         class="flex-1 flex flex-col items-center justify-center gap-4 text-center px-8">
-      <!-- <div class="w-16 h-16 rounded-2xl bg-[#111512] border border-[#1e2820]
-                  flex items-center justify-center text-3xl">
-        🌿
-      </div> -->
-      <div>
-        <p class="text-xl font-semibold text-[#ffffff] mb-2">Como posso te ajudar?</p>
-        <p class="text-sm text-[#01c38e]">Crie um novo chat e selecione a disciplina para começar.</p>
+      class="flex flex-1 items-center justify-center px-8">
+      <div class="w-full max-w-5xl">
+
+        <div class="flex flex-col items-center gap-6 md:flex-row">
+         
+          <div class="w-50 h-40 items-center justify-center rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--muted))] p-6">
+            <img src="../assets/botLogo.png"/>
+          </div>
+
+          <Card class="h-40 w-full text-center flex itens-center justify-center"">
+            <template #header>
+              <h2 class="text-xl font-semibold">Como posso te ajudar?</h2>
+              <p class="text-sm text-[hsl(var(--muted-foreground))]">
+                Crie um novo chat e selecione a disciplina para começar.
+              </p>
+              <div class="px-4 py-4">
+                <Button class="w-full justify-center cursor-pointer" @click="open">
+                  Nova conversa
+                </Button>
+              </div>
+            </template>
+          </Card>
+
+        </div>
       </div>
     </div>
 
     <template v-else>
-      <!-- Cabeçalho -->
-      <div class="bg-[#1a1e29] rounded-sm" style="margin: 10px 30% 10px 30%;">
-        <p class="text-[1rem] text-[#01c38e] font-semibold" style="margin: 5px 10px;">{{ chat.disciplina }}</p>
-        <p class="text-[1rem] font-mono text-[#e8f0ea]" style="margin: 5px 10px;">{{ tituloExibido }}</p>
-      </div>
-
-      <!-- Mensagens -->
       <div ref="messagesEl"
-           class="flex-1 overflow-y-auto px-6 py-6 space-y-4">
-        <ChatMessage
-          v-for="(msg, i) in chat.messages"
-          :key="i"
-          :message="msg"
-        />
+        class="scrollbar-fade flex-1 overflow-y-auto px-6 py-6 mx-auto w-full max-w-7xl">
+        <Card class="mx-auto w-full max-w-7xl">
+          <div class="flex flex-wrap items-center gap-2">
+            <Badge>{{ chat.disciplina }}</Badge>
+            <span class="font-mono text-sm text-[hsl(var(--muted-foreground))]">{{ tituloExibido }}</span>
+          </div>
+        </Card>
+
+        <div class="mt-4 space-y-4">
+          <ChatMessage
+            v-for="(msg, i) in chat.messages"
+            :key="i"
+            :message="msg"
+          />
+        </div>
       </div>
 
-      <!-- Input -->
-      <div class="px-6 py-4 border-t border-[#1e2820] shrink-0">
-        <div class="flex items-end gap-3
-                    bg-[#141914] border border-[#243024]
-                    rounded-2xl px-4 py-3
-                    focus-within:border-green-800
-                    focus-within:shadow-[0_0_0_3px_#16a34a22]
-                    transition-all duration-150">
-          <textarea
-            ref="inputEl"
+      <div class="shrink-0 px-6 pb-6">
+        <Card class="mx-auto w-full max-w-7xl" style="box-shadow: 0px 0px 20px 5px #0A0A0A;">
+          <div class="space-y-3">
+            <Textarea
             v-model="prompt"
-            @keydown.enter.exact.prevent="enviar"
-            @input="ajustarAltura"
+            @keydown="handleKeydown"
             rows="1"
             placeholder="Faça uma pergunta sobre a disciplina..."
-            class="flex-1 bg-transparent text-sm text-[#e8f0ea]
-                   placeholder:text-[#3d5443] resize-none outline-none
-                   font-['Sora',sans-serif] leading-6 max-h-40 overflow-y-auto"
+            classes="w-full min-h-[48px] max-h-[200px] resize-none rounded-md border border-[hsl(var(--input))] bg-[hsl(var(--background))] px-3 py-3 text-sm leading-6 text-[hsl(var(--foreground))] placeholder:text-[hsl(var(--muted-foreground))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
           />
-          <button
-            @click="enviar"
-            :disabled="!prompt.trim() || carregando"
-            class="shrink-0 w-8 h-8 rounded-lg
-                   bg-green-700 hover:bg-green-600
-                   disabled:opacity-30 disabled:cursor-not-allowed
-                   flex items-center justify-center
-                   transition-all duration-150
-                   hover:shadow-[0_0_12px_#16a34a55]"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                 fill="white" class="w-4 h-4">
-              <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/>
-            </svg>
-          </button>
-        </div>
-        <p class="text-[11px] text-[#3d5443] text-center mt-2 font-mono">
-          Enter para enviar · Shift+Enter para nova linha
-        </p>
+            <div class="flex items-center justify-between">
+              <p class="text-[11px] font-mono text-[hsl(var(--muted-foreground))]">
+                Enter para enviar · Shift+Enter para nova linha
+              </p>
+              <Button
+             @click="enviar"
+             :disabled="!prompt.trim() || carregando"
+                size="sm"
+              >
+                Enviar
+              </Button>
+            </div>
+          </div>
+        </Card>
       </div>
     </template>
 
@@ -79,11 +82,17 @@
 import { ref, computed, watch, nextTick } from 'vue'
 import { useChatStore } from '../stores/chat'
 import ChatMessage from './ChatMessage.vue'
+import Card from './ui/Card.vue'
+import Badge from './ui/Badge.vue'
+import Textarea from './ui/Textarea.vue'
+import Button from './ui/Button.vue'
+import { useNewChatModal } from '../composables/useNewChatModal'
+
+const { open } = useNewChatModal()
 
 const store = useChatStore()
 const prompt = ref('')
 const messagesEl = ref(null)
-const inputEl = ref(null)
 
 const chat = computed(() => store.getChatAtivo())
 const tituloExibido = computed(() => {
@@ -100,21 +109,16 @@ async function enviar() {
   const texto = prompt.value.trim()
   if (!texto || carregando.value) return
   prompt.value = ''
-  await nextTick()
-  if (inputEl.value) {
-    inputEl.value.style.height = 'auto'
-  }
   await store.enviarMensagem(texto)
 }
 
-function ajustarAltura() {
-  const el = inputEl.value
-  if (!el) return
-  el.style.height = 'auto'
-  el.style.height = el.scrollHeight + 'px'
+function handleKeydown(event) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault()
+    enviar()
+  }
 }
 
-// Scroll automático ao receber mensagem nova
 watch(
   () => chat.value?.messages?.length,
   async () => {

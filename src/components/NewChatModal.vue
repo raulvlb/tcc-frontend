@@ -1,98 +1,72 @@
 <template>
-  <!-- Overlay -->
-  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50
-              flex items-center justify-center px-4"
-       @click.self="$emit('close')">
-
-    <!-- Card -->
-    <div class="w-full max-w-lg bg-[#1a1e29] border border-[#ffffff]
-                rounded-sm" >
-
-      <!-- Header -->
-      <div class="flex items-center justify-between mb-5 border-b border-[#ffffff]" style="margin-bottom: 20px; padding: 5px 10px;">
-        <div>
-          <p class="text-base font-semibold text-[#ffffff] text-[1rem]">Nova conversa</p>
-          <p class="text-xs text-[#ffffff] mt-0.5 text-[0.875rem]">Selecione a disciplina para este chat</p>
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
+    @click.self="$emit('close')"
+  >
+    <Card class="w-full max-w-lg">
+      <template #header>
+        <div class="flex items-start justify-between gap-3">
+          <div class="space-y-1">
+            <h2 class="text-base font-semibold">Nova conversa</h2>
+            <p class="text-sm text-[hsl(var(--muted-foreground))]">
+              Selecione a disciplina para este chat
+            </p>
+          </div>
+          <Button variant="ghost" size="icon" @click="$emit('close')">✕</Button>
         </div>
-        <button @click="$emit('close')"
-                class="w-7 h-7 rounded-lg flex items-center justify-center
-                       text-[#ffffff] cursor-pointer">
-          ✕
-        </button>
-      </div>
+        <Separator />
+      </template>
 
-      <!-- Carregando -->
-      <div v-if="store.carregandoDisciplinas"
-           class="text-sm text-[#ffffff] text-center py-4" style="margin-bottom: 10px; padding: 5px 10px;">
+      <div v-if="store.carregandoDisciplinas" class="py-5 text-center text-sm text-[hsl(var(--muted-foreground))]">
         Buscando disciplinas...
       </div>
 
-      <!-- Sem disciplinas -->
-      <div v-else-if="store.disciplinas.length === 0"
-           class="text-sm text-[#ffffff] text-center py-4" style="margin-bottom: 10px; padding: 5px 10px;">
-        Nenhuma disciplina encontrada.<br>
-        <span class="text-xs text-[#ffffff]">Verifique se a API está rodando e há stores indexadas.</span>
+      <div v-else-if="store.disciplinas.length === 0" class="space-y-1 py-5 text-center">
+        <p class="text-sm">Nenhuma disciplina encontrada.</p>
+        <p class="text-xs text-[hsl(var(--muted-foreground))]">
+          Verifique se a API está rodando e há stores indexadas.
+        </p>
       </div>
 
-      <!-- Seletor -->
-      <div v-else style="margin-bottom: 10px; padding: 0px 10px;">
-        <!-- <label class="block text-[0.875rem] font-mono text-[#ffffff] uppercase tracking-widest mb-2">
-          Disciplina
-        </label> -->
-
-        <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
-          <button
+      <div v-else class="space-y-4">
+        <div class="max-h-72 space-y-2 overflow-y-auto pr-1">
+          <Button
             v-for="d in store.disciplinas"
-            :key="d.gemini_store_name"
+            :key="d.store_name"
+            variant="outline"
+            class="h-auto w-full justify-start py-3 text-left"
+            :class="selecionada?.store_name === d.store_name ? 'border-[hsl(var(--accent))] bg-[hsl(var(--muted))]' : ''"
             @click="toggleSelecionada(d)"
-            :class="[
-              'w-full text-left px-4 py-3 rounded-sm border text-[1rem] transition-all duration-100 cursor-pointer',
-              selecionada?.gemini_store_name === d.gemini_store_name
-                ? 'bg-[#01c38e] border-[#ffffff] text-[#1a1e29]'
-                : 'bg-[#1e2820] border-[#ffffff] text-[#01c38e] hover:border-[#ffffff] hover:text-[#1a1e29] hover:bg-[#01c38e]'
-            ]"
-            style="padding: 5px 10px;"
-            >
-            <span class="font-medium cursor-pointer">{{ d.store_display_name }}</span>
-            <!-- <span class="block text-[10px] font-mono mt-0.5 opacity-50 truncate">
-              {{ d.drive_folder_id }}
-            </span> -->
-          </button>
+          >
+            <div class="flex w-full items-center justify-between gap-2">
+              <span class="font-medium">{{ d.store_name }}</span>
+              <Badge
+                v-if="selecionada?.store_name === d.store_name"
+                variant="secondary"
+              >
+                Selecionada
+              </Badge>
+            </div>
+          </Button>
         </div>
 
-        <!-- Ações -->
-        <div class="flex gap-2 mt-5 justify-center" style="margin: 20px 0px;">
-          <button
-            @click="criar"
-            :disabled="!selecionada"
-            :class="[
-              'bg-[#1e2820] rounded-sm border border-[#ffffff] text-[#ffffff]',
-              selecionada
-                ? 'hover:border-[#ffffff] hover:text-[#1a1e29] hover:bg-[#01c38e] cursor-pointer'
-                : 'opacity-50 cursor-not-allowed'
-            ]"
-            style="padding: 5px 10px;"
-          >
-            Iniciar Conversa
-          </button>
-          <!-- <button
-            @click="$emit('close')"
-            class="flex-1 py-2.5 rounded-sm text-[0.875rem] font-medium
-                   bg-[#141914] border border-[#1e2820]
-                   text-[#7a9480] hover:text-[#e8f0ea]
-                   transition-all duration-150"
-          >
-            Cancelar
-          </button> -->
+        <div class="flex justify-end">
+          <Button @click="criar" :disabled="!selecionada">
+            Iniciar conversa
+          </Button>
         </div>
       </div>
-    </div>
+    </Card>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useChatStore } from '../stores/chat'
+import Card from './ui/Card.vue'
+import Button from './ui/Button.vue'
+import Separator from './ui/Separator.vue'
+import Badge from './ui/Badge.vue'
 
 const emit = defineEmits(['close'])
 const store = useChatStore()
@@ -101,7 +75,7 @@ const selecionada = ref(null)
 onMounted(() => store.buscarDisciplinas())
 
 function toggleSelecionada(disciplina) {
-  if (selecionada.value?.gemini_store_name === disciplina.gemini_store_name) {
+  if (selecionada.value?.store_name === disciplina.store_name) {
     selecionada.value = null
     return
   }
@@ -111,7 +85,7 @@ function toggleSelecionada(disciplina) {
 
 function criar() {
   if (!selecionada.value) return
-  store.novoChat(selecionada.value.store_display_name, selecionada.value.gemini_store_name)
+  store.novoChat(selecionada.value.store_name, selecionada.value.store_name)
   emit('close')
 }
 </script>
